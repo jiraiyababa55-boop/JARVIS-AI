@@ -14,7 +14,7 @@ from pypdf import PdfReader
 # ------------------------------------------------------------------
 # SETTINGS  (edit these to customize your assistant)
 # ------------------------------------------------------------------
-MODEL = "gemini-2.5-flash"  # check aistudio.google.com for the newest free model name
+MODEL = "gemini-3.8-flash"  # check aistudio.google.com for the newest free model name
 MAX_MATERIAL_CHARS = 40000  # how much of your PDF the AI reads
 
 BASE_PROMPT = """You are Jarvis, a friendly personal AI assistant.
