@@ -101,7 +101,10 @@ if not API_KEY:
     st.error("GEMINI_API_KEY is missing. Add it in Streamlit 'Secrets' (see the guide).")
     st.stop()
 
-client = genai.Client(api_key=API_KEY)
+client = genai.Client(
+    api_key=API_KEY,
+    http_options=types.HttpOptions(timeout=30000),
+)
 
 if "history" not in st.session_state:
     st.session_state.history = []   # what the AI remembers
