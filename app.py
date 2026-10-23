@@ -1,4 +1,5 @@
 import hashlib
+import time
 import io
 import os
 import re
@@ -14,7 +15,8 @@ from pypdf import PdfReader
 # ------------------------------------------------------------------
 # SETTINGS  (edit these to customize your assistant)
 # ------------------------------------------------------------------
-MODEL = "gemini-3.8-flash"  # check aistudio.google.com for the newest free model name
+MODEL = "gemini-3.8-flash"
+MODELS = [MODEL, "gemini-3.8-flash-lite"]  # backup if the first is busy
 MAX_MATERIAL_CHARS = 40000  # how much of your PDF the AI reads
 
 BASE_PROMPT = """You are Jarvis, a friendly personal AI assistant.
@@ -177,14 +179,25 @@ def ask(current_parts, label):
     )
 
     with st.chat_message("assistant"):
-        try:
-            with st.spinner("Thinking..."):
-                response = client.models.generate_content(
-                    model=MODEL, contents=contents, config=config
-                )
-            reply = response.text or "I could not make an answer. Please try again."
-        except Exception as e:
-            st.error(f"Something went wrong: {e}")
+        reply = None
+        last_error = None
+        with st.spinner("Thinking..."):
+            for model_name in MODELS:
+                for attempt in range(2):
+                    try:
+                        response = client.models.generate_content(
+                            model=model_name, contents=contents, config=config
+                        )
+                        reply = response.text
+                        break
+                    except Exception as e:
+                        last_error = e
+                        time.sleep(2)
+                if reply:
+                    break
+        if not reply:
+            st.error("Google's AI is busy right now. Please try again in a minute.")
+            st.caption(str(last_error)[:200])
             return
         st.write(reply)
 
