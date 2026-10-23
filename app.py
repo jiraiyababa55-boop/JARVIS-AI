@@ -16,7 +16,7 @@ from pypdf import PdfReader
 # SETTINGS  (edit these to customize your assistant)
 # ------------------------------------------------------------------
 MODEL = "gemini-3.8-flash"
-MODELS = [MODEL, "gemini-3.8-flash-lite"]  # backup if the first is busy
+MODELS = [MODEL]
 MAX_MATERIAL_CHARS = 40000  # how much of your PDF the AI reads
 
 BASE_PROMPT = """You are Jarvis, a friendly personal AI assistant.
@@ -200,7 +200,7 @@ def ask(current_parts, label):
                     break
         if not reply:
             st.error("Google's AI is busy right now. Please try again in a minute.")
-            st.caption(str(last_error)[:200])
+            st.caption(str(last_error)[:500])
             return
         st.write(reply)
 
